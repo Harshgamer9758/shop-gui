@@ -1,19 +1,15 @@
-main: com.blockmart.shopgui.ShopGUI
+main: com.blockmart.shop_gui.ShopGUI
 name: ShopGUI
-version: ${project.version}
-api-version: 1.19
+version: '1.0.0'
+api-version: '1.20'
 author: harsh
-description: An economy shop GUI plugin.
-softdepend: [Vault]
+depend: [Vault]
 commands:
   shop:
-    description: Opens the main shop GUI.
+    description: Opens the shop GUI.
     usage: /shop
     permission: shopgui.command.shop
 permissions:
   shopgui.command.shop:
     description: Allows opening the shop GUI.
     default: true
-  shopgui.admin:
-    description: Allows admin actions (e.g., adding/removing items).
-    default: op
