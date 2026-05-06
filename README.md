@@ -1,6 +1,6 @@
 # ShopGUI
 
-An economy shop GUI plugin with async database support.
+An economy shop plugin with a GUI.
 
 ## Build
 
