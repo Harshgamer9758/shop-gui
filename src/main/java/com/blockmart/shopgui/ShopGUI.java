@@ -1,36 +1,42 @@
 package com.blockmart.shopgui;
 
 import com.blockmart.shopgui.commands.ShopCommand;
-import com.blockmart.shopgui.database.DatabaseManager;
-import com.blockmart.shopgui.gui.ShopManager;
-import com.blockmart.shopgui.listeners.ShopListener;
+import com.blockmart.shopgui.listeners.ShopInventoryListener;
+import com.blockmart.shopgui.managers.ConfigManager;
+import com.blockmart.shopgui.managers.DatabaseManager;
+import com.blockmart.shopgui.managers.ShopManager;
 import com.blockmart.shopgui.utils.EconomyHook;
+import com.blockmart.shopgui.utils.NBTUtil;
 import org.bukkit.plugin.java.JavaPlugin;
+import java.util.logging.Level;
 
 public final class ShopGUI extends JavaPlugin {
 
+    private EconomyHook economyHook;
     private DatabaseManager databaseManager;
     private ShopManager shopManager;
-    private EconomyHook economyHook;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        ConfigManager.reloadConfig(this);
 
-        this.databaseManager = new DatabaseManager(this);
-        this.shopManager = new ShopManager(this);
-        this.economyHook = new EconomyHook(this);
-
-        if (!economyHook.setupEconomy()) {
-            getLogger().severe("No Vault dependency found! ShopGUI will not function without an economy plugin.");
+        if (!setupEconomy()) {
+            getLogger().log(Level.SEVERE, "Disabled due to no Vault dependency found!");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
-        getCommand("shop").setExecutor(new ShopCommand(this));
-        getServer().getPluginManager().registerEvents(new ShopListener(this), this);
+        databaseManager = new DatabaseManager(this);
+        databaseManager.loadDatabase();
 
-        getLogger().info("ShopGUI has been enabled!");
+        shopManager = new ShopManager(this, databaseManager);
+        shopManager.loadShopItems();
+
+        getCommand("shop").setExecutor(new ShopCommand(this, shopManager));
+        getServer().getPluginManager().registerEvents(new ShopInventoryListener(this, shopManager), this);
+
+        getLogger().log(Level.INFO, "ShopGUI has been enabled!");
     }
 
     @Override
@@ -38,7 +44,19 @@ public final class ShopGUI extends JavaPlugin {
         if (databaseManager != null) {
             databaseManager.closeConnection();
         }
-        getLogger().info("ShopGUI has been disabled!");
+        getLogger().log(Level.INFO, "ShopGUI has been disabled!");
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        economyHook = new EconomyHook();
+        return economyHook.setupEconomy(getServer().getServicesManager());
+    }
+
+    public EconomyHook getEconomyHook() {
+        return economyHook;
     }
 
     public DatabaseManager getDatabaseManager() {
@@ -47,9 +65,5 @@ public final class ShopGUI extends JavaPlugin {
 
     public ShopManager getShopManager() {
         return shopManager;
-    }
-
-    public EconomyHook getEconomyHook() {
-        return economyHook;
     }
 }

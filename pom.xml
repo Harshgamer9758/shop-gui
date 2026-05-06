@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.blockmart</groupId>
     <artifactId>shop-gui</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>ShopGUI</name>
@@ -38,14 +37,15 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <minimizeJar>true</minimizeJar>
                             <relocations>
                                 <relocation>
                                     <pattern>com.zaxxer.hikari</pattern>
                                     <shadedPattern>com.blockmart.shopgui.libs.hikari</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>org.slf4j</pattern>
-                                    <shadedPattern>com.blockmart.shopgui.libs.slf4j</shadedPattern>
+                                    <pattern>org.sqlite</pattern>
+                                    <shadedPattern>com.blockmart.shopgui.libs.sqlite</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -99,13 +99,13 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>23.0.0</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.incendo</groupId>
-            <artifactId>cloud-paper</artifactId>
-            <version>1.9.0</version>
-            <scope>compile</scope>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

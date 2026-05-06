@@ -1,25 +1,20 @@
 package com.blockmart.shopgui.utils;
 
-import com.blockmart.shopgui.ShopGUI;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServiceManager;
 
 public class EconomyHook {
 
-    private final ShopGUI plugin;
     private Economy econ = null;
 
-    public EconomyHook(ShopGUI plugin) {
-        this.plugin = plugin;
-    }
-
-    public boolean setupEconomy() {
-        if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
+    public boolean setupEconomy(ServiceManager sm) {
+        if (sm.getRegistration(Economy.class) == null) {
             return false;
         }
-        RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider<Economy> rsp = sm.getRegistration(Economy.class);
         if (rsp == null) {
             return false;
         }
@@ -27,30 +22,23 @@ public class EconomyHook {
         return econ != null;
     }
 
-    public Economy getEconomy() {
-        return econ;
+    public boolean isEnabled() {
+        return econ != null;
     }
 
-    public String format(double amount) {
-        if (econ != null) {
-            return econ.format(amount);
-        }
-        return String.format("%.2f", amount);
+    public EconomyResponse depositPlayer(OfflinePlayer player, double amount) {
+        return econ.depositPlayer(player, amount);
+    }
+
+    public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
+        return econ.withdrawPlayer(player, amount);
     }
 
     public boolean has(OfflinePlayer player, double amount) {
-        return econ != null && econ.has(player, amount);
+        return econ.has(player, amount);
     }
 
-    public void withdrawPlayer(OfflinePlayer player, double amount) {
-        if (econ != null) {
-            econ.withdrawPlayer(player, amount);
-        }
-    }
-
-    public void depositPlayer(OfflinePlayer player, double amount) {
-        if (econ != null) {
-            econ.depositPlayer(player, amount);
-        }
+    public String format(double amount) {
+        return econ.format(amount);
     }
 }
