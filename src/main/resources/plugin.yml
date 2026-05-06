@@ -1,0 +1,17 @@
+name: ShopGUI
+version: '1.0.0'
+main: com.blockmart.shopgui.ShopGUI
+api-version: '1.20'
+author: harsh
+commands:
+  shop:
+    description: Opens the shop GUI.
+    usage: /<command>
+    permission: shopgui.open
+permissions:
+  shopgui.open:
+    description: Allows players to open the shop GUI.
+    default: true
+  shopgui.admin:
+    description: Allows administrative shop commands (currently none).
+    default: op
